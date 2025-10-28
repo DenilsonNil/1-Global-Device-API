@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: 1_global_devices_api_db
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  flyway:
+    image: flyway/flyway:10-alpine
+    container_name: 1_global_devices_api_db_flyway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      -X
+      -connectRetries=60
+      -locations=filesystem:/flyway/sql
+      migrate
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      FLYWAY_USER: ${POSTGRES_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
+      FLYWAY_SCHEMAS: ${FLYWAY_SCHEMAS}
+    volumes:
+      - ./sql:/flyway/sql:ro
+
+volumes:
+  pg_data:
+
