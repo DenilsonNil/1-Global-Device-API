@@ -44,6 +44,15 @@ mvn clean package
 
 #### Create a new Device
 
+Possible values to state field:
+
+
+| State     | Description |
+|-----------|:-----------:|
+| AVAILABLE |  The device is available for use.  |
+| IN_USE    |  The device is currently in use.  |
+| INACTIVE  | The device is inactive or out of operation. |
+
 ```
 curl --location 'http://localhost:8080/devices' \
 --header 'Content-Type: application/json' \
