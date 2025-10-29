@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static br.com.kualit.devices.domain.entities.device.DeviceStateEnum.IN_USE;
+import static br.com.kualit.devices.domain.entities.error.ErrorMessages.*;
 import static br.com.kualit.devices.infra.mappers.DeviceMapper.toDomain;
 import static br.com.kualit.devices.infra.mappers.DeviceMapper.toEntity;
 import static java.util.stream.Collectors.toList;
@@ -37,7 +39,11 @@ public class DeviceAdapter implements DevicePort {
     @Override
     public Device update(Device device, Long deviceId) {
         DeviceEntity deviceEntity = deviceRepository.findById(deviceId)
-                .orElseThrow(() -> new NoSuchElementException("Device not found"));
+                .orElseThrow(() -> new NoSuchElementException(DEVICE_NOT_FOUND));
+
+        if(deviceEntity.getState() == IN_USE) {
+            throw new IllegalArgumentException(IN_USE_DEVICES_CANNOT_BE_UPDATED);
+        }
 
         deviceEntity.setName(device.getName() == null ? deviceEntity.getName() : device.getName());
         deviceEntity.setBrand(device.getBrand() == null ? deviceEntity.getBrand() : device.getBrand());
@@ -73,6 +79,13 @@ public class DeviceAdapter implements DevicePort {
 
     @Override
     public void delete(Long deviceId) {
+        DeviceEntity deviceEntity = deviceRepository.findById(deviceId)
+                .orElseThrow(() -> new NoSuchElementException(DEVICE_NOT_FOUND));
+
+        if(deviceEntity.getState() == IN_USE) {
+            throw new IllegalArgumentException(IN_USE_DEVICES_CANNOT_BE_DELETED);
+        }
+
         deviceRepository.deleteById(deviceId);
     }
 }
