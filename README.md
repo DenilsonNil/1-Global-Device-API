@@ -18,7 +18,7 @@ POSTGRES_DB=1_global_devices_api_db
 POSTGRES_USER=root
 POSTGRES_PASSWORD=root
 POSTGRES_PORT=5432
-FLYWAY_SCHEMAS=public`
+FLYWAY_SCHEMAS=public
 ```
 
 #### Step 4: 
