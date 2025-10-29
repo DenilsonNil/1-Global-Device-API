@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:devicesdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop   # Ou use Flyway se preferir migrações
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: false
+
+  flyway:
+    enabled: true
+    locations: classpath:sql
+    baseline-on-migrate: true
+    clean-disabled: false

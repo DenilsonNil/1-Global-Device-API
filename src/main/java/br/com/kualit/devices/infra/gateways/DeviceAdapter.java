@@ -41,7 +41,10 @@ public class DeviceAdapter implements DevicePort {
         DeviceEntity deviceEntity = deviceRepository.findById(deviceId)
                 .orElseThrow(() -> new NoSuchElementException(DEVICE_NOT_FOUND));
 
-        if(deviceEntity.getState() == IN_USE) {
+        boolean isTryingToUpdateInUseDevice = deviceEntity.getState() == IN_USE;
+
+        boolean b = device.getName() != null || device.getBrand() != null;
+        if(isTryingToUpdateInUseDevice && b) {
             throw new IllegalArgumentException(IN_USE_DEVICES_CANNOT_BE_UPDATED);
         }
 
