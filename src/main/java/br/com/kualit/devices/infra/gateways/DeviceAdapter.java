@@ -42,9 +42,9 @@ public class DeviceAdapter implements DevicePort {
                 .orElseThrow(() -> new NoSuchElementException(DEVICE_NOT_FOUND));
 
         boolean isTryingToUpdateInUseDevice = deviceEntity.getState() == IN_USE;
+        boolean isTryingToChangeNameOrBrand = device.getName() != null || device.getBrand() != null;
 
-        boolean b = device.getName() != null || device.getBrand() != null;
-        if(isTryingToUpdateInUseDevice && b) {
+        if(isTryingToUpdateInUseDevice && isTryingToChangeNameOrBrand) {
             throw new IllegalArgumentException(IN_USE_DEVICES_CANNOT_BE_UPDATED);
         }
 
@@ -52,6 +52,7 @@ public class DeviceAdapter implements DevicePort {
         deviceEntity.setBrand(device.getBrand() == null ? deviceEntity.getBrand() : device.getBrand());
         deviceEntity.setState(device.getState() == null ? deviceEntity.getState() : device.getState());
         deviceEntity = deviceRepository.save(deviceEntity);
+
         return toDomain(deviceEntity);
     }
 

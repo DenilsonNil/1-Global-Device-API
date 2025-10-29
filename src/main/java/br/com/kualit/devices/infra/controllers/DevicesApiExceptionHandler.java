@@ -57,7 +57,7 @@ public class DevicesApiExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Error> handleIllegalArgumentException(IllegalArgumentException ex) {
         var error = new Error(ex.getMessage(), null, null);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
 
